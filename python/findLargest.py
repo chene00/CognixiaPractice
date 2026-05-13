@@ -1,5 +1,6 @@
 class Main:
 
+    # Static methods mean that these can be called without having to create an instance of this class.
     @staticmethod
     def main():
         numbers = [10, 23, 52, 6, 1, 3, 4, 102]

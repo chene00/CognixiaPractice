@@ -1,5 +1,6 @@
 
 class Student:
+    # Instance Methods require self to be pass in
     def __init__(self, id:int, name:str, marks:float):
         self.id = id
         self.name = name
@@ -17,6 +18,7 @@ class Student:
     def getInfo(self):
         return f"ID:{self.id} {self.name} with a score of {self.marks}"
     
+    # Static Method compared to the instance methods above. (Do not pass self)
     @staticmethod
     def getTopStudent(listofStudents):
 
@@ -36,7 +38,9 @@ if __name__ == "__main__":
         Student(4, "Little Timmy", 100)
     ]
 
+    # Calling a static method using the class name. 
     bestStudent = Student.getTopStudent(list)
 
+    # Calling an instance method using the actual "instance" name. 
     print(F"The top student is: {bestStudent.getInfo()}")
 
