@@ -14,3 +14,7 @@ class Account(BaseModel):
     type : AccountType
     balance : float
 
+class AccountCreate(BaseModel):
+    type : AccountType
+    balance: float
+    

@@ -1,4 +1,4 @@
-from models.account import AccountType, Account
+from models.account import AccountType, Account, AccountCreate
 from db.database import ACCOUNTS, CUSTOMERS
 
 class AccountRepository:
@@ -26,3 +26,13 @@ class AccountRepository:
                 great_accounts.append(acc)
         
         return great_accounts
+
+    def create_account(self, custID : int, newAcc : AccountCreate) -> Account:
+        curr_id = 0
+        for acc in self.db:
+            if acc.id > curr_id:
+                curr_id = acc.id
+        curr_id += 1
+        new_acc = Account(id=curr_id, customer_id=custID, type=newAcc.type, balance=newAcc.balance)
+        ACCOUNTS.append(new_acc)
+        return new_acc
