@@ -7,3 +7,5 @@ pydantic-settings
 pytest
 pytest-mock
 httpx
+pytest-asyncio
+Mangum
