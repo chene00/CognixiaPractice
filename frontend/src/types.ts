@@ -1,7 +1,13 @@
-export enum AccountType {
-    SAVINGS = "savings",
-    CHECKING = "checking"
-}
+// src/types.ts
+
+// FIX: Replaced 'enum' with a const object and derived type to satisfy 'erasableSyntaxOnly'
+export const AccountType = {
+    SAVINGS: "savings",
+    CHECKING: "checking"
+} as const;
+
+export type AccountType = (typeof AccountType)[keyof typeof AccountType];
+
 
 // Interface in TypeScript is a contract. 
 // If we say something is a Customer, TypeScript will guarentee that it has these attributes
