@@ -37,12 +37,12 @@ async def test_get_all_customer_api(override_get_database):
 async def test_get_customer_by_id_api(override_get_database):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         payload = {"name" : "Jane Doe", "email" : "janedoe@example.com"}
-        create_reponse = await client.post("/api/customers/", json=payload)
+        create_response = await client.post("/api/customers/", json=payload)
         cust_id = create_response.json()["id"]
 
         response = await client.get(f"/api/customers/{cust_id}")
 
         assert response.status_code == 200
-        assert response_json.()["name"] == "Jane Doe"
+        assert response.json()["name"] == "Jane Doe"
 
 # Continue to add more test
