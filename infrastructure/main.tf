@@ -187,6 +187,7 @@ resource "aws_lambda_function" "fastapi_backend" {
       MONGODB_URL   = var.mongodb_url
       DATABASE_NAME = "BankApp-${var.environment}"
       SECRET_KEY    = var.jwt_secret_key
+      FRONTEND_URLS = "https://dzfmc2aiqla8u.cloudfront.net"
     }
   }
 }

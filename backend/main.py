@@ -16,9 +16,12 @@ async def lifespan(app: FastAPI):
 # Create the actual fastapi app
 app = FastAPI(title="Bank App", lifespan=lifespan)
 
+allowed_origins_str = os.getenv("FRONTEND_URLS", "http://localhost:5173")
+origins_list = allowed_origins_str.split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], # Your Vite frontend URL
+    allow_origins=origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
