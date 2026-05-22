@@ -40,7 +40,8 @@ async def test_get_account_by_customer_id(account_service, mock_repo):
     ]
     mock_repo.get_accounts_id.return_value = fake_accounts
 
-    result = await account_service.getAccountByCustomerID("5")
+    # Added 2nd argument current_custID
+    result = await account_service.getAccountByCustomerID("5", "5") 
 
     assert len(result) == 2
     mock_repo.get_accounts_id.assert_called_once_with("5")
@@ -64,16 +65,17 @@ async def test_create_account_sucesss(account_service, mock_repo, mock_cust_repo
     cust_id = "1"
     new_account = AccountCreate(type=AccountType.SAVINGS, balance=500.0)
 
-    fake_customer = Customer(id=cust_id, name="John Doe", email="johndoe@example.com")
+    # Added hashed_password
+    fake_customer = Customer(id=cust_id, name="John Doe", email="johndoe@example.com", hashed_password="pw")
     mock_cust_repo.get_id_customer.return_value=fake_customer
 
     expected_account = Account(id="10", customer_id=cust_id, type=AccountType.SAVINGS, balance=500.0)
     mock_repo.create_account.return_value = expected_account
 
-    result = await account_service.createAccount(custID=cust_id, newAcc=new_account)
+    # Updated keyword arguments
+    result = await account_service.createAccount(request_custID=cust_id, newAcc=new_account, current_custID=cust_id)
 
     assert result.id == "10"
-
     mock_repo.create_account.assert_called_once_with(cust_id, new_account)
 
 @pytest.mark.asyncio
@@ -82,7 +84,8 @@ async def test_create_account_negative_balance(account_service, mock_repo):
     new_account = AccountCreate(type=AccountType.SAVINGS, balance=-100.0)
 
     with pytest.raises(HTTPException) as exc_info:
-        await account_service.createAccount(custID=cust_id, newAcc=new_account)
+        # Updated keyword arguments
+        await account_service.createAccount(request_custID=cust_id, newAcc=new_account, current_custID=cust_id)
 
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail == "Balance can't be negative"
@@ -97,9 +100,10 @@ async def test_create_account_customer_not_found(account_service, mock_repo, moc
     mock_cust_repo.get_id_customer.return_value = None
 
     with pytest.raises(HTTPException) as exc_info:
-        await account_service.createAccount(custID=cust_id, newAcc=new_account)
+        # Updated keyword arguments
+        await account_service.createAccount(request_custID=cust_id, newAcc=new_account, current_custID=cust_id)
 
     assert exc_info.value.status_code == 404
     assert exc_info.value.detail == f"Customer {cust_id} not found"
 
-    mock_repo.createAccount.assert_not_called()
+    mock_repo.create_account.assert_not_called()

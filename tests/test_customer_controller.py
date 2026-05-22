@@ -25,8 +25,9 @@ def override_get_database(test_db):
 @pytest.mark.asyncio
 async def test_get_all_customer_api(override_get_database):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        await client.post("/api/customers/", json={"name":"User One", "email":"one@example.com"})
-        await client.post("/api/customers/", json={"name":"User TWo", "email":"two@example.com"})
+        # Added passwords here
+        await client.post("/api/customers/", json={"name":"User One", "email":"one@example.com", "password":"password123"})
+        await client.post("/api/customers/", json={"name":"User TWo", "email":"two@example.com", "password":"password123"})
 
         response = await client.get("/api/customers/")
 
@@ -36,7 +37,8 @@ async def test_get_all_customer_api(override_get_database):
 @pytest.mark.asyncio
 async def test_get_customer_by_id_api(override_get_database):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        payload = {"name" : "Jane Doe", "email" : "janedoe@example.com"}
+        # Added password here
+        payload = {"name" : "Jane Doe", "email" : "janedoe@example.com", "password":"password123"}
         create_response = await client.post("/api/customers/", json=payload)
         cust_id = create_response.json()["id"]
 
@@ -44,5 +46,3 @@ async def test_get_customer_by_id_api(override_get_database):
 
         assert response.status_code == 200
         assert response.json()["name"] == "Jane Doe"
-
-# Continue to add more test
