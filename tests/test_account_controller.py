@@ -4,9 +4,12 @@ from httpx import AsyncClient, ASGITransport
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from backend.main import app
-from backend.controllers.account_controller import get_database
-from backend.dependencies import get_current_user
+
+# CRITICAL FIX: Import get_current_user directly from the controller namespace 
+# so FastAPI overrides the exact same object reference in memory!
+from backend.controllers.account_controller import get_database, get_current_user
 from backend.models.customer import CustomerResponse
+
 
 @pytest_asyncio.fixture
 async def test_db():
@@ -31,7 +34,7 @@ async def test_create_account_api_success(override_get_database):
         cust_payload = {
             "name": "Jane Doe",
             "email": "janedone@example.com",
-            "password": "password123" # Added password
+            "password": "password123"
         }
         cust_response = await client.post("/api/customers/", json=cust_payload)
         assert cust_response.status_code == 201
@@ -56,17 +59,17 @@ async def test_create_account_api_success(override_get_database):
             assert data["balance"] == 1500.00
             assert "id" in data
         finally:
-            app.dependency_overrides.pop(get_current_user, None) # Clean up override
+            app.dependency_overrides.pop(get_current_user, None)
 
 @pytest.mark.asyncio
 async def test_create_account_api_failure(override_get_database):
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         cust_id = "1"
-        
+
         # Override authentication dynamically
         app.dependency_overrides[get_current_user] = lambda: CustomerResponse(id=cust_id, name="Test", email="test@test.com")
-        
+
         try:
             payload = {
                 "type" : "savings",
@@ -85,7 +88,7 @@ async def test_create_account_api_failure(override_get_database):
 async def test_create_account_api_customer_not_found(override_get_database):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         fake_cust_id = "5f8c04b8a9b9a45612345678"
-        
+
         # Override authentication dynamically
         app.dependency_overrides[get_current_user] = lambda: CustomerResponse(id=fake_cust_id, name="Fake", email="fake@fake.com")
 
