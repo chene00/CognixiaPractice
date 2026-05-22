@@ -9,3 +9,7 @@ __pycache__/
 .terraform.lock.hcl
 deployment.zip
 package/
+.env
+.env.local
+.env.production
+.env.development
