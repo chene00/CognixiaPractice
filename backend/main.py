@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from controllers import account_controller, customer_controller, auth_controller
 from db.mongodb import connect_to_mongo, close_mongo
 from mangum import Mangum
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
