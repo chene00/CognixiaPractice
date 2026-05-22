@@ -1,6 +1,6 @@
 // src/api/client.ts
 
-const BASE_URL = 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 // This is a wrapper around the native browser fetch()
 export const apiClient = async (endpoint: string, options: RequestInit = {}) => {
