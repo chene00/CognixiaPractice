@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pydantic
+pydantic[email]
+motor
+pydantic-settings
+pytest
+pytest-mock
+httpx
+pytest-asyncio
+Mangum
+bcrypt
+python-jose[cryptography]
+python-multipart
+passlib

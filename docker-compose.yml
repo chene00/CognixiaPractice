@@ -1,0 +1,35 @@
+# /docker-compose.yml
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      # In Docker Compose, services communicate via their service names.
+      # Notice we use 'mongodb' instead of 'localhost'
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DATABASE_NAME=bankapp
+      - SECRET_KEY=your_development_secret_key
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    ports:
+      # Maps your local machine's port 5173 to Nginx's port 80
+      - "5173:80" 
+    depends_on:
+      - backend
+
+# This ensures your database doesn't wipe when the container stops
+volumes:
+  mongo_data:
